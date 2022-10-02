@@ -47,7 +47,6 @@ export function Emoji({
         : `https://cdn.jsdelivr.net/npm/emoji-datasource-${set}@14.0.0/img/${set}/64/${emojiSkin.unified}.png`
       : undefined);
 
-  console.log("🚀 ~ file: index.tsx ~ line 43 ~ imageSrc", imageSrc);
   const spritesheetSrc =
     typeof getSpritesheetURL === "function"
       ? getSpritesheetURL(set)

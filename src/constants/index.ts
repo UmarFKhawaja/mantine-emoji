@@ -1,8 +1,8 @@
 export const EmojiVersion: number = 14;
 
-export const EmojiSet: string = "native";
+export const EmojiSet: string = 'native';
 
-export const Locale: string = "en";
+export const Locale: string = 'en';
 
 export const MaxFrequentRows: number = 4;
 
@@ -10,91 +10,91 @@ export const PerLine: number = 9;
 
 export const pickerData = {
   autoFocus: {
-    value: false,
+    value: false
   },
   emojiButtonColors: {
-    value: null,
+    value: null
   },
   emojiButtonRadius: {
-    value: "100%",
+    value: '100%'
   },
   emojiButtonSize: {
-    value: 36,
+    value: 36
   },
   emojiSize: {
-    value: 24,
+    value: 24
   },
   emojiVersion: {
     value: 14,
-    choices: [1, 2, 3, 4, 5, 11, 12, 12.1, 13, 13.1, 14],
+    choices: [1, 2, 3, 4, 5, 11, 12, 12.1, 13, 13.1, 14]
   },
   icons: {
-    value: "auto",
-    choices: ["auto", "outline", "solid"],
+    value: 'auto',
+    choices: ['auto', 'outline', 'solid']
   },
   locale: {
-    value: "en",
+    value: 'en',
     choices: [
-      "en",
-      "ar",
-      "cs",
-      "de",
-      "es",
-      "fa",
-      "fi",
-      "fr",
-      "it",
-      "ja",
-      "nl",
-      "pl",
-      "pt",
-      "ru",
-      "uk",
-      "zh",
-    ],
+      'en',
+      'ar',
+      'cs',
+      'de',
+      'es',
+      'fa',
+      'fi',
+      'fr',
+      'it',
+      'ja',
+      'nl',
+      'pl',
+      'pt',
+      'ru',
+      'uk',
+      'zh'
+    ]
   },
   maxFrequentRows: {
-    value: 4,
+    value: 4
   },
   navPosition: {
-    value: "top",
-    choices: ["top", "bottom", "none"],
+    value: 'top',
+    choices: ['top', 'bottom', 'none']
   },
   noCountryFlags: {
-    value: false,
+    value: false
   },
   noResultsEmoji: {
-    value: null,
+    value: null
   },
   perLine: {
-    value: 9,
+    value: 9
   },
   previewEmoji: {
-    value: null,
+    value: null
   },
   previewPosition: {
-    value: "bottom",
-    choices: ["top", "bottom", "none"],
+    value: 'bottom',
+    choices: ['top', 'bottom', 'none']
   },
   searchPosition: {
-    value: "sticky",
-    choices: ["sticky", "static", "none"],
+    value: 'sticky',
+    choices: ['sticky', 'static', 'none']
   },
   set: {
-    value: "facebook",
-    choices: ["native", "apple", "facebook", "google", "twitter"],
+    value: 'facebook',
+    choices: ['native', 'apple', 'facebook', 'google', 'twitter']
   },
   skin: {
     value: 1,
-    choices: [1, 2, 3, 4, 5, 6],
+    choices: [1, 2, 3, 4, 5, 6]
   },
   skinTonePosition: {
-    value: "preview",
-    choices: ["preview", "search", "none"],
+    value: 'preview',
+    choices: ['preview', 'search', 'none']
   },
   theme: {
-    value: "auto",
-    choices: ["auto", "light", "dark"],
+    value: 'auto',
+    choices: ['auto', 'light', 'dark']
   },
 
   // Data
@@ -114,6 +114,6 @@ export const pickerData = {
   // Deprecated
   stickySearch: {
     deprecated: true,
-    value: true,
-  },
+    value: true
+  }
 };
