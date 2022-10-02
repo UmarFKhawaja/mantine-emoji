@@ -8,6 +8,8 @@ export interface EmojiProps {
   set?: any;
   skin?: any;
   spritesheet?: any;
+  rows: number;
+  cols: number;
 
   getImageURL?: any;
   getSpritesheetURL?: any;
