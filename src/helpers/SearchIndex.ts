@@ -1,5 +1,11 @@
-import i18n_en from '@emoji-mart/data/i18n/en.json'
-import { EmojiSet, EmojiVersion, Locale, MaxFrequentRows, PerLine } from '../constants';
+import i18n_en from '@emoji-mart/data/i18n/en.json';
+import {
+  EmojiSet,
+  EmojiVersion,
+  Locale,
+  MaxFrequentRows,
+  PerLine
+} from '../constants';
 import { FrequentlyUsed } from './FrequentlyUsed';
 import { NativeSupport } from './NativeSupport';
 import { SafeFlags } from './SafeFlags';
@@ -10,15 +16,15 @@ let Pool: any = null;
 let I18n: any = null;
 export let Data: any = null;
 
-function get(emojiId: any) {
+function get(emojiId: any, data?: any) {
   if (emojiId.id) {
     return emojiId;
   }
 
   return (
-    Data.emojis[emojiId] ||
-    Data.emojis[Data.aliases[emojiId]] ||
-    Data.emojis[Data.natives[emojiId]]
+    data.emojis[emojiId] ||
+    data.emojis[data.aliases[emojiId]] ||
+    data.emojis[data.natives[emojiId]]
   );
 }
 
@@ -26,7 +32,10 @@ function reset() {
   Pool = null;
 }
 
-async function search(value: string, { maxResults, caller }: { maxResults?: number, caller?: any } = {}) {
+async function search(
+  value: string,
+  { maxResults, caller }: { maxResults?: number; caller?: any } = {}
+) {
   if (!value || !value.trim().length) {
     return null;
   }
@@ -76,9 +85,7 @@ async function search(value: string, { maxResults, caller }: { maxResults?: numb
         scores[emoji.id] = 0;
       }
 
-      scores[emoji.id] += emoji.id === value
-        ? 0
-        : score + 1;
+      scores[emoji.id] += emoji.id === value ? 0 : score + 1;
     }
 
     pool = results;
@@ -200,8 +207,8 @@ async function _init(props: any) {
     (locale === 'en'
       ? i18n_en
       : await fetchJSON(
-        `https://cdn.jsdelivr.net/npm/@emoji-mart/data@latest/i18n/${locale}.json`
-      ));
+          `https://cdn.jsdelivr.net/npm/@emoji-mart/data@latest/i18n/${locale}.json`
+        ));
 
   if (props.custom) {
     for (let x in props.custom) {
@@ -364,7 +371,8 @@ async function _init(props: any) {
             emoji.search += `,${native}`;
           }
 
-          const skinShortcodes = skinIndex === 1 ? '' : `:skin-tone-${skinIndex}:`;
+          const skinShortcodes =
+            skinIndex === 1 ? '' : `:skin-tone-${skinIndex}:`;
 
           skin.shortcodes = `:${emoji.id}:${skinShortcodes}`;
         }

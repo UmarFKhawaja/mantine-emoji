@@ -267,6 +267,7 @@ async function _init(props: any) {
   }
 
   initCallback();
+  return Data;
 }
 
 export function getProps(props: any, defaultProps: any, element: any) {

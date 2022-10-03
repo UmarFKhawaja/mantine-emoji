@@ -1,34 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { Emoji } from './components';
-import { init, Data, getProps } from './config';
+import { init, getProps } from './config';
 import { pickerData } from './constants';
+import { SearchIndex } from './helpers';
 
 function App() {
+  const [data, setData] = useState<any>(null);
   const defaultProps = getProps({}, pickerData, null);
 
   useEffect(() => {
     const fetchData = async () => {
-      await init(defaultProps);
+      setData(await init(defaultProps));
     };
     fetchData().catch(console.error);
-  });
+  }, [defaultProps]);
 
   return (
     <>
-      {Data && (
-        <Emoji
-          emoji={Data.emojis['100']}
-          id={Data.emojis['100']?.id}
-          set={'facebook'}
-          size={'24'}
-          rows={Data?.sheet.rows}
-          cols={Data?.sheet.cols}
-          // skin={1}
-          // spritesheet={true}
-          // getSpritesheetURL={em.getSpritesheetURL}
-        />
-      )}
+      {data &&
+        data.categories.map((category: any) =>
+          category?.emojis.map((emojiId: string) => {
+            const emoji = SearchIndex.get(emojiId, data);
+
+            return (
+              <Emoji
+                emoji={emoji}
+                id={emojiId}
+                key={emojiId}
+                set={defaultProps.set}
+                size={defaultProps.emojiSize}
+                rows={data?.sheet.rows}
+                cols={data?.sheet.cols}
+                skin={defaultProps.skin}
+                spritesheet={defaultProps.spritesheet}
+                getSpritesheetURL={defaultProps.getSpritesheetURL}
+              />
+            );
+          })
+        )}
     </>
   );
 }
