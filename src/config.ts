@@ -115,9 +115,9 @@ async function _init(props: any) {
 
   if (props.custom) {
     for (let i in props.custom) {
-      const x = parseInt(i);
-      const category = props.custom[x];
-      const prevCategory = props.custom[x - 1];
+      const x: number = parseInt(i);
+      const category: any = props.custom[x];
+      const prevCategory: any = props.custom[x - 1];
 
       if (!category.emojis || !category.emojis.length) continue;
 

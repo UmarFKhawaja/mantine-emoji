@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { MantineProvider as FrameworkProvider } from '@mantine/core';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { EmojiProvider } from './providers';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,7 +11,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <FrameworkProvider withGlobalStyles withNormalizeCSS>
-      <App/>
+      <EmojiProvider>
+        <App />
+      </EmojiProvider>
     </FrameworkProvider>
   </React.StrictMode>
 );

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
 import { Emoji } from './components';
 import { init, getProps } from './config';
-import { pickerData } from './constants';
 import { SearchIndex } from './helpers';
+import { useEmojiDefaultData } from './providers';
 
 function App() {
+  const { emojiDefaultProps } = useEmojiDefaultData();
+
   const [data, setData] = useState<any>(null);
-  const defaultProps = getProps({}, pickerData, null);
+
+  const defaultProps = getProps({}, emojiDefaultProps, null);
 
   useEffect(() => {
     const fetchData = async () => {
