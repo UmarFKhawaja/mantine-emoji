@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
-import { Emoji } from './components';
-import { init, getProps } from './config';
-import { SearchIndex } from './helpers';
-import { EmojiContext } from './providers/EmojiProvider/contexts';
 import { AppProps } from './type';
+import { Emoji } from './components';
+import { EmojiContext } from './providers/EmojiProvider/contexts';
+import { SearchIndex } from './helpers';
+import { init, getProps } from './config';
 
 function App(props: AppProps) {
   const { data, setData } = useContext(EmojiContext);
