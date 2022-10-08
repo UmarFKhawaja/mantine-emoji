@@ -1,21 +1,22 @@
 import React, { ReactElement } from 'react';
 import { EmojiProps } from './props';
-import { Data, SearchIndex } from '../../helpers';
+import { SearchIndex } from '../../helpers';
 
 export function Emoji({
-                        emoji,
-                        fallback,
-                        getImageURL,
-                        getSpritesheetURL,
-                        id,
-                        native,
-                        set,
-                        shortcodes,
-                        size,
-                        skin,
-                        spritesheet
-                      }: EmojiProps): ReactElement {
-
+  emoji,
+  fallback,
+  getImageURL,
+  getSpritesheetURL,
+  id,
+  native,
+  set,
+  shortcodes,
+  size,
+  skin,
+  spritesheet,
+  rows,
+  cols
+}: EmojiProps): ReactElement {
   if (shortcodes) {
     const matches = shortcodes.match(SearchIndex.SHORTCODES_REGEX);
 
@@ -52,7 +53,7 @@ export function Emoji({
       : `https://cdn.jsdelivr.net/npm/emoji-datasource-${set}@14.0.0/img/${set}/sheets-256/64.png`;
 
   return (
-    <span className="emoji-mart-emoji" data-emoji-set={set}>
+    <span>
       {imageSrc ? (
         <img
           style={{
@@ -71,8 +72,7 @@ export function Emoji({
             fontSize: size,
             fontFamily:
               '"EmojiMart", "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji", "Twemoji Mozilla", "Noto Color Emoji", "Android Emoji"'
-          }}
-        >
+          }}>
           {emojiSkin.native}
         </span>
       ) : (
@@ -82,14 +82,11 @@ export function Emoji({
             width: size,
             height: size,
             backgroundImage: `url(${spritesheetSrc})`,
-            backgroundSize: `${100 * Data.sheet.cols}% ${
-              100 * Data.sheet.rows
-            }%`,
-            backgroundPosition: `${
-              (100 / (Data.sheet.cols - 1)) * emojiSkin.x
-            }% ${(100 / (Data.sheet.rows - 1)) * emojiSkin.y}%`
-          }}
-        ></span>
+            backgroundSize: `${100 * cols}% ${100 * rows}%`,
+            backgroundPosition: `${(100 / (cols - 1)) * emojiSkin.x}% ${
+              (100 / (rows - 1)) * emojiSkin.y
+            }%`
+          }}></span>
       )}
     </span>
   );

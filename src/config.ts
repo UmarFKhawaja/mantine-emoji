@@ -1,123 +1,35 @@
 import i18n_en from '@emoji-mart/data/i18n/en.json';
+import { pickerData } from './constants';
 import {
-  EmojiSet,
-  EmojiVersion,
-  Locale,
-  MaxFrequentRows,
-  PerLine
-} from '../constants';
-import { FrequentlyUsed } from './FrequentlyUsed';
-import { NativeSupport } from './NativeSupport';
-import { SafeFlags } from './SafeFlags';
+  FrequentlyUsed,
+  NativeSupport,
+  SafeFlags,
+  SearchIndex
+} from './helpers';
 
-const SHORTCODES_REGEX = /^:([^:]+):(?::skin-tone-(\d):)?$/;
+export let I18n: any = null;
 
-let Pool: any = null;
-let I18n: any = null;
 export let Data: any = null;
 
-function get(emojiId: any, data?: any) {
-  if (emojiId.id) {
-    return emojiId;
+const fetchCache: { [key: string]: any } = {};
+
+async function fetchJSON(src: string) {
+  if (fetchCache[src]) {
+    return fetchCache[src];
   }
 
-  return (
-    data.emojis[emojiId] ||
-    data.emojis[data.aliases[emojiId]] ||
-    data.emojis[data.natives[emojiId]]
-  );
-}
+  const response = await fetch(src);
+  const json = await response.json();
 
-function reset() {
-  Pool = null;
-}
-
-async function search(
-  value: string,
-  { maxResults, caller }: { maxResults?: number; caller?: any } = {}
-) {
-  if (!value || !value.trim().length) {
-    return null;
-  }
-
-  maxResults = maxResults || 90;
-
-  await init(null, { caller: caller || 'SearchIndex.search' });
-
-  const values = value
-    .toLowerCase()
-    .replace(/(\w)-/, '$1 ')
-    .split(/[\s|,]+/)
-    .filter((word: string, i: number, words: string[]) => {
-      return word.trim() && words.indexOf(word) === i;
-    });
-
-  if (!values.length) {
-    return;
-  }
-
-  let pool = Pool || (Pool = Object.values(Data.emojis));
-  let results: any[] = [];
-  let scores: any = null;
-
-  for (const value of values) {
-    if (!pool.length) {
-      break;
-    }
-
-    results = [];
-    scores = {};
-
-    for (const emoji of pool) {
-      if (!emoji.search) {
-        continue;
-      }
-
-      const score = emoji.search.indexOf(`,${value}`);
-
-      if (score === -1) {
-        continue;
-      }
-
-      results.push(emoji);
-
-      if (!scores[emoji.id]) {
-        scores[emoji.id] = 0;
-      }
-
-      scores[emoji.id] += emoji.id === value ? 0 : score + 1;
-    }
-
-    pool = results;
-  }
-
-  if (results.length < 2) {
-    return results;
-  }
-
-  results.sort((a, b) => {
-    const aScore = scores[a.id];
-    const bScore = scores[b.id];
-
-    if (aScore === bScore) {
-      return a.id.localeCompare(b.id);
-    }
-
-    return aScore - bScore;
-  });
-
-  if (results.length > maxResults) {
-    results = results.slice(0, maxResults);
-  }
-
-  return results;
+  fetchCache[src] = json;
+  return json;
 }
 
 let promise: any = null;
 let initCallback: any = null;
-let initialized: any = false;
+let initialized: boolean = false;
 
-function init(options: any, { caller }: { caller?: any } = {}) {
+export function init(options: any, { caller }: any = {}) {
   if (!promise) {
     promise = new Promise((resolve) => {
       initCallback = resolve;
@@ -125,7 +37,7 @@ function init(options: any, { caller }: { caller?: any } = {}) {
   }
 
   if (options) {
-    _init(options).then();
+    return _init(options);
   } else if (caller && !initialized) {
     console.warn(
       `\`${caller}\` requires data to be initialized first. Promise will be pending until \`init\` is called.`
@@ -135,37 +47,21 @@ function init(options: any, { caller }: { caller?: any } = {}) {
   return promise;
 }
 
-const fetchCache: any = {};
-
-async function fetchJSON(src: string): Promise<any> {
-  if (fetchCache[src]) {
-    return fetchCache[src];
-  }
-
-  const response = await fetch(src);
-
-  const json = await response.json();
-
-  fetchCache[src] = json;
-
-  return json;
-}
-
 async function _init(props: any) {
   initialized = true;
 
   let { emojiVersion, set, locale } = props;
 
   if (!emojiVersion) {
-    emojiVersion = EmojiVersion;
+    emojiVersion = pickerData.emojiVersion.value;
   }
 
   if (!set) {
-    set = EmojiSet;
+    set = pickerData.set.value;
   }
 
   if (!locale) {
-    locale = Locale;
+    locale = pickerData.locale.value;
   }
 
   if (!Data) {
@@ -176,6 +72,7 @@ async function _init(props: any) {
       ));
 
     Data.emoticons = {};
+
     Data.natives = {};
 
     Data.categories.unshift({
@@ -185,6 +82,7 @@ async function _init(props: any) {
 
     for (const alias in Data.aliases) {
       const emojiId = Data.aliases[alias];
+
       const emoji = Data.emojis[emojiId];
 
       if (!emoji) {
@@ -192,13 +90,18 @@ async function _init(props: any) {
       }
 
       emoji.aliases || (emoji.aliases = []);
+
       emoji.aliases.push(alias);
     }
   } else {
     Data.categories = Data.categories.filter((c: any) => {
       const isCustom = !!c.name;
 
-      return !isCustom;
+      if (!isCustom) {
+        return true;
+      }
+
+      return false;
     });
   }
 
@@ -211,22 +114,15 @@ async function _init(props: any) {
         ));
 
   if (props.custom) {
-    for (let x in props.custom) {
-      const i: number = parseInt(x);
-      const category = props.custom[i];
-      const prevCategory = props.custom[i - 1];
+    for (let i in props.custom) {
+      const x: number = parseInt(i);
+      const category: any = props.custom[x];
+      const prevCategory: any = props.custom[x - 1];
 
-      if (!category.emojis || !category.emojis.length) {
-        continue;
-      }
+      if (!category.emojis || !category.emojis.length) continue;
 
-      if (!category.id) {
-        category.id = `custom_${i + 1}`;
-      }
-
-      if (!category.name) {
-        category.name = I18n.categories.custom;
-      }
+      category.id || (category.id = `custom_${i + 1}`);
+      category.name || (category.name = I18n.categories.custom);
 
       if (prevCategory && !category.icon) {
         category.target = prevCategory.target || prevCategory;
@@ -246,8 +142,8 @@ async function _init(props: any) {
         return props.categories.indexOf(c.id) !== -1;
       })
       .sort((c1: any, c2: any) => {
-        const i1 = props.categories.indexOf(c1.id);
-        const i2 = props.categories.indexOf(c2.id);
+        const i1: any = props.categories.indexOf(c1.id);
+        const i2: any = props.categories.indexOf(c2.id);
 
         return i1 - i2;
       });
@@ -267,56 +163,48 @@ async function _init(props: any) {
 
     if (category.id === 'frequent') {
       let { maxFrequentRows, perLine } = props;
-
-      if (!maxFrequentRows) {
-        maxFrequentRows = MaxFrequentRows;
-      }
-
-      if (!perLine) {
-        perLine = PerLine;
-      }
+      maxFrequentRows || (maxFrequentRows = pickerData.maxFrequentRows.value);
+      perLine || (perLine = pickerData.perLine.value);
 
       category.emojis = FrequentlyUsed.get({ maxFrequentRows, perLine });
     }
 
     if (!category.emojis || !category.emojis.length) {
       Data.categories.splice(categoryIndex, 1);
-
       continue;
     }
 
     const { categoryIcons } = props;
-
     if (categoryIcons) {
       const icon = categoryIcons[category.id];
-
       if (icon && !category.icon) {
         category.icon = icon;
       }
     }
 
     let emojiIndex = category.emojis.length;
-
     while (emojiIndex--) {
       const emojiId = category.emojis[emojiIndex];
       const emoji = emojiId.id ? emojiId : Data.emojis[emojiId];
 
-      if (!emoji) {
+      // eslint-disable-next-line no-loop-func
+      const ignore = () => {
         category.emojis.splice(emojiIndex, 1);
+      };
 
+      if (!emoji) {
+        ignore();
         continue;
       }
 
       if (latestVersionSupport && emoji.version > latestVersionSupport) {
-        category.emojis.splice(emojiIndex, 1);
-
+        ignore();
         continue;
       }
 
       if (noCountryFlags && category.id === 'flags') {
         if (!SafeFlags.includes(emoji.id)) {
-          category.emojis.splice(emojiIndex, 1);
-
+          ignore();
           continue;
         }
       }
@@ -333,12 +221,12 @@ async function _init(props: any) {
           ]
             .map(([strings, split]) => {
               if (!strings) {
-                return [];
+                // eslint-disable-next-line array-callback-return
+                return;
               }
-
               return (Array.isArray(strings) ? strings : [strings])
                 .map((string) => {
-                  return (split ? string.split(/[-|_\s]+/) : [string]).map(
+                  return (split ? string.split(/[-|_|\s]+/) : [string]).map(
                     (s: string) => s.toLowerCase()
                   );
                 })
@@ -356,16 +244,11 @@ async function _init(props: any) {
         }
 
         let skinIndex = 0;
-
         for (const skin of emoji.skins) {
-          if (!skin) {
-            continue;
-          }
-
+          if (!skin) continue;
           skinIndex++;
 
           const { native } = skin;
-
           if (native) {
             Data.natives[native] = emoji.id;
             emoji.search += `,${native}`;
@@ -373,7 +256,6 @@ async function _init(props: any) {
 
           const skinShortcodes =
             skinIndex === 1 ? '' : `:skin-tone-${skinIndex}:`;
-
           skin.shortcodes = `:${emoji.id}:${skinShortcodes}`;
         }
       }
@@ -381,10 +263,63 @@ async function _init(props: any) {
   }
 
   if (resetSearchIndex) {
-    reset();
+    SearchIndex.reset();
   }
 
   initCallback();
+  return Data;
 }
 
-export const SearchIndex = { search, get, reset, SHORTCODES_REGEX };
+export function getProps(props: any, defaultProps: any, element: any) {
+  props || (props = {});
+
+  const _props: any = {};
+  for (let k in defaultProps) {
+    _props[k] = getProp(k, props, defaultProps, element);
+  }
+
+  return _props;
+}
+
+export function getProp(
+  propName: string,
+  props: any,
+  defaultProps: any,
+  element: any
+) {
+  const defaults = defaultProps[propName];
+  let value =
+    (element && element.getAttribute(propName)) ||
+    (props[propName] !== null && props[propName] !== undefined
+      ? props[propName]
+      : null);
+
+  if (!defaults) {
+    return value;
+  }
+
+  if (
+    value != null &&
+    defaults.value &&
+    typeof defaults.value !== typeof value
+  ) {
+    if (typeof defaults.value === 'boolean') {
+      value = value === 'false' ? false : true;
+    } else {
+      value = defaults.value.constructor(value);
+    }
+  }
+
+  if (defaults.transform && value) {
+    value = defaults.transform(value);
+  }
+
+  if (
+    value === null ||
+    (defaults.choices && defaults.choices.indexOf(value) === -1)
+  ) {
+    value = defaults.value;
+  }
+
+  return value;
+}

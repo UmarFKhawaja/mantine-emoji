@@ -1,17 +1,20 @@
+import App from './App';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { MantineProvider as FrameworkProvider } from '@mantine/core';
-import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { EmojiProvider } from './providers';
+import { MantineProvider as FrameworkProvider } from '@mantine/core';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
 root.render(
   <React.StrictMode>
     <FrameworkProvider withGlobalStyles withNormalizeCSS>
-      <App/>
+      <EmojiProvider>
+        <App set={'facebook'} locale={'en'} emojiVersion={14} />
+      </EmojiProvider>
     </FrameworkProvider>
   </React.StrictMode>
 );
