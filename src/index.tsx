@@ -12,7 +12,7 @@ root.render(
   <React.StrictMode>
     <FrameworkProvider withGlobalStyles withNormalizeCSS>
       <EmojiProvider>
-        <App />
+        <App set={'facebook'} locale={'en'} emojiVersion={14} />
       </EmojiProvider>
     </FrameworkProvider>
   </React.StrictMode>

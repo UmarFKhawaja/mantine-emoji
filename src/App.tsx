@@ -1,48 +1,60 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Emoji } from './components';
 import { init, getProps } from './config';
 import { SearchIndex } from './helpers';
-import { useEmojiDefaultData } from './providers';
+import { EmojiContext } from './providers/EmojiProvider/contexts';
+import { AppProps } from './type';
 
-function App() {
-  const { emojiDefaultProps } = useEmojiDefaultData();
+function App(props: AppProps) {
+  const { data, setData } = useContext(EmojiContext);
 
-  const [data, setData] = useState<any>(null);
+  const { set, locale, emojiVersion, emojiSize, skin } = props;
 
-  const defaultProps = getProps({}, emojiDefaultProps, null);
+  const initProps: Record<string, any> = getProps(
+    {},
+    {
+      set: {
+        value: set
+      },
+      locale: {
+        value: locale
+      },
+      emojiVersion: {
+        value: emojiVersion
+      }
+    },
+    null
+  );
 
   useEffect(() => {
     const fetchData = async () => {
-      setData(await init(defaultProps));
+      setData(await init(initProps));
     };
+
     fetchData().catch(console.error);
-  }, [defaultProps]);
+  }, [setData, initProps]);
 
   return (
     <>
-      {/* {data &&
+      {data &&
         data.categories.map((category: any) =>
           category?.emojis.map((emojiId: string) => {
-            const emoji = SearchIndex.get(emojiId, data);
+            const emoji: Record<string, any> = SearchIndex.get(emojiId, data);
 
-            return ( */}
-      {data && (
-        <Emoji
-          emoji={data.emojis['angel']}
-          id={data.emojis['angel'].id}
-          key={data.emojis['angel'].id}
-          set={defaultProps.set}
-          size={defaultProps.emojiSize}
-          rows={data?.sheet.rows}
-          cols={data?.sheet.cols}
-          skin={defaultProps.skin}
-          spritesheet={defaultProps.spritesheet}
-          getSpritesheetURL={defaultProps.getSpritesheetURL}
-        />
-      )}
-      {/* ); */}
-      {/* })
-        )} */}
+            return (
+              <Emoji
+                cols={data?.sheet.cols}
+                emoji={emoji}
+                id={emoji.id}
+                key={emoji.id}
+                rows={data?.sheet.rows}
+                set={set}
+                size={emojiSize || '24'}
+                skin={skin || 1}
+              />
+            );
+          })
+        )}
     </>
   );
 }

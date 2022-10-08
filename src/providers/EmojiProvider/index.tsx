@@ -1,14 +1,16 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { EmojiProviderProps } from './props';
-import { useEmojiDefaultData } from './hooks';
 import { EmojiContext } from './contexts';
 
-const EmojiProvider: FC<EmojiProviderProps> = (props: EmojiProviderProps) => {
+const EmojiProvider: FC<EmojiProviderProps> = (
+  props: EmojiProviderProps
+): any => {
   const { children }: EmojiProviderProps = props;
 
-  const { emojiDefaultProps } = useEmojiDefaultData();
+  const [data, setData] = useState<any>(null);
+
   return (
-    <EmojiContext.Provider value={emojiDefaultProps}>
+    <EmojiContext.Provider value={{ data, setData }}>
       {children}
     </EmojiContext.Provider>
   );
