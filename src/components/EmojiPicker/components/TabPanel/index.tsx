@@ -23,7 +23,7 @@ const CategoryPanel = (props: CategoryPanelProps) => {
           </Text>
           <Grid
             columns={9}
-            gutter={'xs'}
+            gutter="xs"
             sx={{
               maxHeight: '400px',
               overflowX: 'hidden',
@@ -39,7 +39,8 @@ const CategoryPanel = (props: CategoryPanelProps) => {
                   span={1}
                   sx={{
                     '&:hover': {
-                      backgroundColor: 'grey',
+                      backgroundColor: '#EBECF0',
+                      borderRadius: '50%',
                       cursor: 'pointer'
                     }
                   }}>
