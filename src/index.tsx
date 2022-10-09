@@ -1,9 +1,10 @@
-import App from './App';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import { EmojiProvider } from './providers';
 import { MantineProvider as FrameworkProvider } from '@mantine/core';
+import EmojiPicker from './components/EmojiPicker';
+import './index.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,7 +14,7 @@ root.render(
   <React.StrictMode>
     <FrameworkProvider withGlobalStyles withNormalizeCSS>
       <EmojiProvider>
-        <App set={'facebook'} locale={'en'} emojiVersion={14} />
+        <EmojiPicker theme={'light'} />
       </EmojiProvider>
     </FrameworkProvider>
   </React.StrictMode>
