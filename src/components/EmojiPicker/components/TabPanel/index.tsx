@@ -14,7 +14,7 @@ const CategoryPanel = (props: CategoryPanelProps) => {
   return (
     <>
       {categories?.map((category: any) => (
-        <Tabs.Panel value={category.id}>
+        <Tabs.Panel value={category.id} key={category.id}>
           <Text
             sx={{
               marginTop: '3px'
@@ -35,6 +35,7 @@ const CategoryPanel = (props: CategoryPanelProps) => {
 
               return (
                 <Grid.Col
+                  key={emoji.id}
                   span={1}
                   sx={{
                     '&:hover': {
@@ -46,7 +47,6 @@ const CategoryPanel = (props: CategoryPanelProps) => {
                     cols={data?.sheet.cols}
                     emoji={emoji}
                     id={emoji.id}
-                    key={emoji.id}
                     rows={data?.sheet.rows}
                     set={set}
                     size={size}

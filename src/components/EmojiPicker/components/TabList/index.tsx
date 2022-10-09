@@ -30,6 +30,7 @@ const CategoryTab = (props: CategoryTabProps) => {
       {categories?.map((category: any, i: number) => {
         return (
           <Tabs.Tab
+            key={category.id}
             value={category.id}
             style={{ padding: '10px', marginTop: '-10px' }}>
             <ActionIcon variant="transparent" size={20} radius="xs">

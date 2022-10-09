@@ -35,6 +35,9 @@ export function Emoji({
 
   return (
     <span
+      onClick={() => {
+        console.log(emojiSkin.native);
+      }}
       style={{
         fontSize: `${size}px`,
         fontFamily:
