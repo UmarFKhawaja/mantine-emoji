@@ -1,5 +1,7 @@
 export const EmojiVersion: number = 14;
 
+export const EmojiSize: string = '24';
+
 export const EmojiSet: string = 'native';
 
 export const Locale: string = 'en';
@@ -7,6 +9,15 @@ export const Locale: string = 'en';
 export const MaxFrequentRows: number = 4;
 
 export const PerLine: number = 9;
+
+export const EmojiSkin: number = 1;
+
+export const Icons: string = 'auto';
+
+export const THEME_ICONS: any = {
+  light: 'outline',
+  dark: 'solid'
+};
 
 export const pickerData = {
   autoFocus: {
@@ -116,4 +127,18 @@ export const pickerData = {
     deprecated: true,
     value: true
   }
+};
+
+export const CategoriesTitle: Record<string, string> = {
+  activity: 'Activity',
+  custom: 'Custom',
+  flags: 'Flags',
+  foods: 'Food & Drink',
+  frequent: 'Frequently used',
+  nature: 'Animals & Nature',
+  objects: 'Objects',
+  people: 'Smileys & People',
+  places: 'Travel & Places',
+  search: 'Search Results',
+  symbols: 'Symbols'
 };
