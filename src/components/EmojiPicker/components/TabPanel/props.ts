@@ -6,4 +6,6 @@ export type CategoryPanelProps = {
   size: string;
 
   skin: number;
+
+  searchedEmojis: any;
 };

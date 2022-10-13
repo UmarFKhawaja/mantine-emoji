@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Group, Modal, Tabs } from '@mantine/core';
+import { Button, Group, Modal, Tabs, TextInput } from '@mantine/core';
 import { EmojiPickerProps } from './props';
 import { EmojiContext } from '../../providers/EmojiProvider/contexts';
 import {
@@ -12,9 +12,14 @@ import {
 import { getProps, init } from '../../config';
 import CategoryTab from './components/TabList';
 import CategoryPanel from './components/TabPanel';
+import { IconSearch } from '@tabler/icons';
+import { SearchIndex } from '../../helpers';
 
 const EmojiPicker = (props: EmojiPickerProps) => {
   const [opened, setOpened] = useState(false);
+  const [searchData, setSearchData] = useState<Record<string, any> | null>(
+    null
+  );
 
   const { theme } = props;
 
@@ -46,6 +51,29 @@ const EmojiPicker = (props: EmojiPickerProps) => {
     fetchData().catch(console.error);
   }, [setData, initProps]);
 
+  const searchEmoji = async (value: string) => {
+    if (!value) {
+      setSearchData(null);
+      return;
+    }
+    const emojis = await SearchIndex.search(value, data);
+
+    const searchedEmoji: { [key: string]: any } = {};
+
+    emojis?.forEach((emoji: { id: any; name: string }) => {
+      searchedEmoji[emoji['id']] = emoji;
+    });
+    console.log(searchedEmoji);
+
+    setSearchData({
+      ...data,
+      emojis: searchedEmoji
+    });
+  };
+  console.log(
+    '🚀 ~ file: index.tsx ~ line 69 ~ searchEmoji ~ searchData',
+    searchData
+  );
   return (
     <>
       <Modal
@@ -57,13 +85,26 @@ const EmojiPicker = (props: EmojiPickerProps) => {
         overlayOpacity={0.55}
         overlayBlur={3}
         trapFocus={false}>
-        <Tabs defaultValue={data?.categories[0].id}>
-          <CategoryTab categories={data?.categories} theme={theme} />
+        <Tabs
+          defaultValue={searchData?.categories[0].id || data?.categories[0].id}>
+          <CategoryTab
+            categories={searchData?.categories || data?.categories}
+            theme={theme}
+          />
+          <TextInput
+            placeholder="Search"
+            icon={<IconSearch size={14} />}
+            style={{
+              paddingTop: '5px'
+            }}
+            onChange={(event) => searchEmoji(event.currentTarget.value)}
+          />
           <CategoryPanel
-            categories={data?.categories}
+            categories={searchData?.categories || data?.categories}
             set={EmojiSet}
             size={EmojiSize}
             skin={EmojiSkin}
+            searchedEmojis={searchData}
           />
         </Tabs>
       </Modal>

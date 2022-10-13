@@ -6,6 +6,10 @@ import { CategoryTabProps } from './props';
 
 const CategoryTab = (props: CategoryTabProps) => {
   const { categories, theme } = props;
+  console.log(
+    '🚀 ~ file: index.tsx ~ line 9 ~ CategoryTab ~ categories',
+    categories
+  );
 
   const renderIcon = (category: any) => {
     const { icon } = category;

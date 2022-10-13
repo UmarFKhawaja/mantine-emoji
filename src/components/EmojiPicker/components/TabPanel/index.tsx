@@ -9,7 +9,7 @@ import { Grid, Tabs, Text } from '@mantine/core';
 const CategoryPanel = (props: CategoryPanelProps) => {
   const { data } = useContext(EmojiContext);
 
-  const { categories, set, size, skin } = props;
+  const { categories, set, size, skin, searchedEmojis } = props;
 
   return (
     <>
@@ -31,30 +31,35 @@ const CategoryPanel = (props: CategoryPanelProps) => {
               marginTop: '5px'
             }}>
             {category?.emojis.map((emojiId: string) => {
-              const emoji: Record<string, any> = SearchIndex.get(emojiId, data);
+              const emoji: Record<string, any> = SearchIndex.get(
+                emojiId,
+                searchedEmojis || data
+              );
 
               return (
-                <Grid.Col
-                  key={emoji.id}
-                  span={1}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: '#EBECF0',
-                      borderRadius: '50%',
-                      cursor: 'pointer'
-                    }
-                  }}>
-                  <Emoji
-                    cols={data?.sheet.cols}
-                    emoji={emoji}
-                    id={emoji.id}
-                    rows={data?.sheet.rows}
-                    set={set}
-                    size={size}
-                    skin={skin}
-                    spritesheet={true}
-                  />
-                </Grid.Col>
+                emoji && (
+                  <Grid.Col
+                    key={emoji?.id}
+                    span={1}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#EBECF0',
+                        borderRadius: '50%',
+                        cursor: 'pointer'
+                      }
+                    }}>
+                    <Emoji
+                      cols={data?.sheet.cols}
+                      emoji={emoji}
+                      id={emoji?.id}
+                      rows={data?.sheet.rows}
+                      set={set}
+                      size={size}
+                      skin={skin}
+                      spritesheet={true}
+                    />
+                  </Grid.Col>
+                )
               );
             })}
           </Grid>
