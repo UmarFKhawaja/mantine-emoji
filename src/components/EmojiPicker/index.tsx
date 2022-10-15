@@ -63,17 +63,13 @@ const EmojiPicker = (props: EmojiPickerProps) => {
     emojis?.forEach((emoji: { id: any; name: string }) => {
       searchedEmoji[emoji['id']] = emoji;
     });
-    console.log(searchedEmoji);
 
     setSearchData({
       ...data,
       emojis: searchedEmoji
     });
   };
-  console.log(
-    '🚀 ~ file: index.tsx ~ line 69 ~ searchEmoji ~ searchData',
-    searchData
-  );
+
   return (
     <>
       <Modal
