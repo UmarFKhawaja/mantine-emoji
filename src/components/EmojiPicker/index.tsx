@@ -1,8 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Button, Group, Modal, Tabs, TextInput } from '@mantine/core';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import {
+  Button,
+  Group,
+  Modal,
+  ScrollArea,
+  Space,
+  Tabs,
+  TextInput
+} from '@mantine/core';
 import { EmojiPickerProps } from './props';
 import { EmojiContext } from '../../providers/EmojiProvider/contexts';
 import {
+  CategoriesScrollAxis,
   EmojiSet,
   EmojiSize,
   EmojiSkin,
@@ -14,6 +23,7 @@ import CategoryTab from './components/TabList';
 import CategoryPanel from './components/TabPanel';
 import { IconSearch } from '@tabler/icons';
 import { SearchIndex } from '../../helpers';
+import { useScrollIntoView } from '@mantine/hooks';
 
 const EmojiPicker = (props: EmojiPickerProps) => {
   const [opened, setOpened] = useState(false);
@@ -69,7 +79,24 @@ const EmojiPicker = (props: EmojiPickerProps) => {
       emojis: searchedEmoji
     });
   };
+  const [activeTab, setActiveTab] = useState<string | null>();
 
+  const changeTab = (tab: string) => {
+    console.log(tab);
+  };
+
+  const viewport: any = useRef<HTMLDivElement>();
+
+  const scrollToFlags = (category: string) => {
+    console.log(
+      '🚀 ~ file: index.tsx ~ line 100 ~ EmojiPicker ~ viewport',
+      viewport
+    );
+    viewport.current.scrollTo({
+      top: CategoriesScrollAxis[category],
+      behavior: 'smooth'
+    });
+  };
   return (
     <>
       <Modal
@@ -77,31 +104,43 @@ const EmojiPicker = (props: EmojiPickerProps) => {
         onClose={() => setOpened(false)}
         withCloseButton={false}
         size={'sm'}
-        padding={'xs'}
+        sx={{
+          '> div': {
+            '> div': { padding: '0px' }
+          }
+        }}
         overlayOpacity={0.55}
         overlayBlur={3}
         trapFocus={false}>
         <Tabs
-          defaultValue={searchData?.categories[0].id || data?.categories[0].id}>
+          value={activeTab}
+          defaultValue={searchData?.categories[0].id || data?.categories[0].id}
+          onTabChange={changeTab}>
           <CategoryTab
             categories={searchData?.categories || data?.categories}
             theme={theme}
+            scrollToFlags={scrollToFlags}
           />
           <TextInput
             placeholder="Search"
             icon={<IconSearch size={14} />}
             style={{
-              paddingTop: '5px'
+              padding: '5px 10px 10px 10px'
             }}
             onChange={(event) => searchEmoji(event.currentTarget.value)}
           />
-          <CategoryPanel
-            categories={searchData?.categories || data?.categories}
-            set={EmojiSet}
-            size={EmojiSize}
-            skin={EmojiSkin}
-            searchedEmojis={searchData}
-          />
+          <ScrollArea
+            style={{ width: 380, height: 400 }}
+            viewportRef={viewport}>
+            <CategoryPanel
+              setActiveTab={setActiveTab}
+              categories={searchData?.categories || data?.categories}
+              set={EmojiSet}
+              size={EmojiSize}
+              skin={EmojiSkin}
+              searchedEmojis={searchData}
+            />
+          </ScrollArea>
         </Tabs>
       </Modal>
 

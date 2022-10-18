@@ -1,5 +1,7 @@
+import { Dispatch } from 'react';
+
 export type CategoryPanelProps = {
-  categories: { [key: string]: string | number }[];
+  categories: any;
 
   set: string;
 
@@ -8,4 +10,8 @@ export type CategoryPanelProps = {
   skin: number;
 
   searchedEmojis: any;
+
+  setActiveTab: Dispatch<any>;
+  scrollableRef?: any;
+  targetRef?: any;
 };

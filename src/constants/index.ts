@@ -131,7 +131,6 @@ export const pickerData = {
 
 export const CategoriesTitle: Record<string, string> = {
   activity: 'Activity',
-  custom: 'Custom',
   flags: 'Flags',
   foods: 'Food & Drink',
   frequent: 'Frequently used',
@@ -139,6 +138,17 @@ export const CategoriesTitle: Record<string, string> = {
   objects: 'Objects',
   people: 'Smileys & People',
   places: 'Travel & Places',
-  search: 'Search Results',
   symbols: 'Symbols'
+};
+
+export const CategoriesScrollAxis: Record<string, number> = {
+  frequent: 0,
+  people: 213.6,
+  nature: 2920.8,
+  foods: 3695.08,
+  activity: 4416.8,
+  places: 4893.8,
+  objects: 6045.6,
+  symbols: 7380.2,
+  flags: 8560.2
 };

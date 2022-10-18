@@ -5,7 +5,7 @@ import navigationImg from '../../category-icons';
 import { CategoryTabProps } from './props';
 
 const CategoryTab = (props: CategoryTabProps) => {
-  const { categories, theme } = props;
+  const { categories, theme, scrollToFlags } = props;
 
   const renderIcon = (category: any) => {
     const { icon } = category;
@@ -25,15 +25,25 @@ const CategoryTab = (props: CategoryTabProps) => {
 
     return categoryIcons[style] || categoryIcons;
   };
+
   return (
-    <Tabs.List position={'center'} grow={true}>
+    <Tabs.List
+      position={'center'}
+      grow={true}
+      style={{
+        padding: '10px 10px 0px 10px'
+      }}>
       {categories?.map((category: any, i: number) => {
         return (
           <Tabs.Tab
             key={category.id}
-            value={category.id}
+            value={categories[0].id as string}
             style={{ padding: '10px', marginTop: '-10px' }}>
-            <ActionIcon variant="transparent" size={20} radius="xs">
+            <ActionIcon
+              onClick={() => scrollToFlags(category.id)}
+              variant="transparent"
+              size={20}
+              radius="xs">
               {renderIcon(category)}
             </ActionIcon>
           </Tabs.Tab>
