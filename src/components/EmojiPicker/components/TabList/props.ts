@@ -3,5 +3,7 @@ export type CategoryTabProps = {
 
   theme: string;
 
+  activeTab : any;
+
   scrollToFlags: any;
 };

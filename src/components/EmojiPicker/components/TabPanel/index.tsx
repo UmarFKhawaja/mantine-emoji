@@ -1,10 +1,10 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { CategoriesTitle } from '../../../../constants';
-import { CategoryPanelProps } from './props';
-import { Emoji } from '../../../Emoji';
-import { EmojiContext } from '../../../../providers/EmojiProvider/contexts';
 import { SearchIndex } from '../../../../helpers';
-import { Grid, Paper, Tabs, Text } from '@mantine/core';
+import { CategoryPanelProps } from './props';
+import {Emoji} from '../../../../components';
+import { Box, Grid, Paper, Text } from '@mantine/core';
+import { EmojiContext } from '../../../../providers/EmojiProvider/contexts';
 
 const CategoryPanel = (props: CategoryPanelProps) => {
   const { data } = useContext(EmojiContext);
@@ -15,7 +15,6 @@ const CategoryPanel = (props: CategoryPanelProps) => {
     size,
     skin,
     searchedEmojis,
-    setActiveTab,
     scrollableRef
   } = props;
   /**
@@ -28,58 +27,66 @@ const CategoryPanel = (props: CategoryPanelProps) => {
   //   }
   // };
 
-
   let showEmoji = (searchedEmojis?.emojis && Object.keys(searchedEmojis?.emojis).length > 0) || searchedEmojis;
   let result = showEmoji === null || showEmoji ===true;
-
   return (
+    <>
     <Paper
       ref={scrollableRef}
       sx={{
         overflowX: 'hidden',
         padding: '10px 10px 10px 10px'
       }}>
+        <Box>
       {result && categories?.map((category: any) => (
-        <Tabs.Panel value={categories[0].id} key={category.id}>
-          <Text id={category.id}>{CategoriesTitle[category.id]}</Text>
-
-          <Grid columns={9} gutter="xs">
-            {category?.emojis.map((emojiId: string) => {
-              const emoji: Record<string, any> = SearchIndex.get(
-                emojiId,
-                searchedEmojis || data
-              );
-
-              return (
-                emoji && (
-                  <Grid.Col
-                    key={emoji?.id}
-                    span={1}
-                    sx={{
-                      '&:hover': {
-                        backgroundColor: '#EBECF0',
-                        borderRadius: '50%',
-                        cursor: 'pointer'
-                      }
-                    }}>
-                    <Emoji
-                      cols={data?.sheet.cols}
-                      emoji={emoji}
-                      id={emoji?.id}
-                      rows={data?.sheet.rows}
-                      set={set}
-                      size={size}
-                      skin={skin}
-                      spritesheet={true}
-                    />
-                  </Grid.Col>
-                )
-              );
-            })}
-          </Grid>
-        </Tabs.Panel>
+        <>
+        {  
+          ((searchedEmojis?.emojis && Object?.keys(searchedEmojis?.emojis).toString().split(",").filter(elem=> category?.emojis.includes(elem)).length>0) || !searchedEmojis?.emojis) &&
+                <>                
+                  <Text id={category.id}>{CategoriesTitle[category.id]}</Text>
+                
+                  <Grid columns={9} gutter="xs" justify="space-around">
+                    {category?.emojis.map((emojiId: string) => {
+                      const emoji: Record<string, any> = SearchIndex.get(
+                        emojiId,
+                        searchedEmojis || data
+                      );
+                      
+                      return (
+                        emoji && (
+                          <Grid.Col
+                            key={emoji?.id}
+                            span="content"
+                            sx={{
+                              '&:hover': {
+                                backgroundColor: 'grey',
+                                borderRadius: '35%',
+                                cursor: 'pointer',
+                                opacity:0.7
+                              }
+                            }}>
+                            <Emoji
+                              cols={data?.sheet.cols}
+                              emoji={emoji}
+                              id={emoji?.id}
+                              rows={data?.sheet.rows}
+                              set={set}
+                              size={size}
+                              skin={skin}
+                              spritesheet={true}
+                            />
+                          </Grid.Col>
+                        )
+                      );
+                    })}
+                  </Grid>
+               </>
+          }
+        </>
       ))}
+      </Box>
     </Paper>
+    </>
   );
 };
 
