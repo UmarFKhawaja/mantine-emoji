@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
-  Button,
+  ActionIcon,
   Group,
   Modal,
   ScrollArea,
-  Tabs,
   TextInput
 } from '@mantine/core';
 import { EmojiPickerProps } from './props';
@@ -20,18 +19,16 @@ import {
 import { getProps, init } from '../../config';
 import CategoryTab from './components/TabList';
 import CategoryPanel from './components/TabPanel';
-import { IconSearch } from '@tabler/icons';
 import { SearchIndex } from '../../helpers';
-import { useScrollIntoView } from '@mantine/hooks';
+import { IconMoodSmile, IconSearch } from '@tabler/icons';
+// import { useScrollIntoView } from '@mantine/hooks';
 
 
 const EmojiPicker = (props: EmojiPickerProps) => {
   const [opened, setOpened] = useState(false);
-  // const [scrolled, setScrolled] = useState(false);
-  // const [scrollPosition, setScrollPosition] = useState(0);
-  // const [previousPosition, setPreviousPosition] = useState(0);
-  // const [scrollDirection, setScrollDirection] = useState("down");
-  
+  const [scrolled, setScrolled] = useState(false);
+  const [activeTab, setActiveTab] = useState<string | null>('frequent');
+
   
   
   const [searchData, setSearchData] = useState<Record<string, any> | null>(
@@ -68,37 +65,17 @@ const EmojiPicker = (props: EmojiPickerProps) => {
     fetchData().catch(console.error);
   }, [setData, initProps]);
 
-  
-  // const manageScroll = ({x,y}:any)=>{
-    // updateScrollDir(y);
-    // if(!scrolled) 
-  //     onScrollPositionChange();
-  // }
 
-  // const updateScrollDir = (y:any) => {
-  //   const scrollY = y;
-  //   if (Math.abs(scrollY - previousPosition) < 0) {
-  //     return;
-  //   }
-  //   setScrollDirection(scrollY > previousPosition ? "down" : "up");
-  //   setPreviousPosition(scrollY);
-  // };
+  const onScrollPositionChange = ({y}:any)=>{
 
+    const keys = Object.keys(CategoriesScrollAxis);    
+    const found = Object.values(CategoriesScrollAxis).findIndex((e)=>{
+        return y <= e;
+      }) - 1;
 
-  const onScrollPositionChange = ({x,y}:any)=>{
-  //   let category = data?.categories[scrollPosition]?.id;
-  //   if(scrollDirection === "down"){
-  //     scrollPosition+1 > data?.categories?.length ? setScrollPosition(0) : setScrollPosition(scrollPosition+1);
-
-  //     viewport.current.scrollTo({
-  //       top: CategoriesScrollAxis[category],
-  //       behavior: 'smooth'
-  //     });
-  //     setScrolled(true);
-  //     setTimeout(() => {
-  //       setScrolled(false);
-  //     }, 1000);
-  //   }
+      if(found !== -1 && !scrolled){
+        setActiveTab(keys[found]);
+      }
   }
 
   const searchEmoji = async (value: string) => {
@@ -119,21 +96,6 @@ const EmojiPicker = (props: EmojiPickerProps) => {
       emojis: searchedEmoji
     });
   };
-  const [activeTab, setActiveTab] = useState<string | null>();
-
-  const changeTab = (tab: any) => {
-    console.log(tab);
-  };
-
-  // const findIndexCategory = (search : any)=>{
-  //   let index = -1;
-  //     data?.categories?.filter((value:any,key:any)=>{
-  //       if(value.id === search)
-  //         return index = key;
-  //     })
-
-  //     return index;
-  // }
 
   const viewport: any = useRef<HTMLDivElement>();
 
@@ -142,11 +104,19 @@ const EmojiPicker = (props: EmojiPickerProps) => {
       '🚀 ~ file: index.tsx ~ line 100 ~ EmojiPicker ~ viewport',
       viewport
     );
-    // setScrollPosition(findIndexCategory(category));
+
     viewport.current.scrollTo({
       top: CategoriesScrollAxis[category],
       behavior: 'smooth'
     });
+
+    setActiveTab(category);
+
+    
+      setScrolled(true);
+      setTimeout(() => {
+        setScrolled(false);
+      }, 1000);
   };
   return (
     <>
@@ -163,14 +133,11 @@ const EmojiPicker = (props: EmojiPickerProps) => {
         overlayOpacity={0.55}
         overlayBlur={3}
         trapFocus={false}>
-        <Tabs
-          value={activeTab}
-          defaultValue={searchData?.categories[0].id || data?.categories[0].id}
-          onTabChange={changeTab}>
           <CategoryTab
             categories={searchData?.categories || data?.categories}
             theme={theme}
             scrollToFlags={scrollToFlags}
+            activeTab={activeTab}
           />
           <TextInput
             placeholder="Search"
@@ -186,7 +153,6 @@ const EmojiPicker = (props: EmojiPickerProps) => {
             onScrollPositionChange={onScrollPositionChange}
             >
             <CategoryPanel
-              setActiveTab={setActiveTab}
               categories={searchData?.categories || data?.categories}
               set={EmojiSet}
               size={EmojiSize}
@@ -194,11 +160,10 @@ const EmojiPicker = (props: EmojiPickerProps) => {
               searchedEmojis={searchData}
             />
           </ScrollArea>
-        </Tabs>
       </Modal>
 
       <Group position="center">
-        <Button onClick={() => setOpened(true)}>Open Modal</Button>
+        <ActionIcon onClick={() => setOpened(true)}><IconMoodSmile strokeWidth={2} size="xl"/></ActionIcon>
       </Group>
     </>
   );

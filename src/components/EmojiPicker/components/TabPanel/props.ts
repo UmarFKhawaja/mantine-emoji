@@ -1,5 +1,3 @@
-import { Dispatch } from 'react';
-
 export type CategoryPanelProps = {
   categories: any;
 
@@ -11,7 +9,6 @@ export type CategoryPanelProps = {
 
   searchedEmojis: any;
 
-  setActiveTab: Dispatch<any>;
   scrollableRef?: any;
   targetRef?: any;
 };

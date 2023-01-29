@@ -1,11 +1,13 @@
 import React from 'react';
-import { ActionIcon, Tabs } from '@mantine/core';
-import { Icons, THEME_ICONS } from '../../../../constants';
+import { ActionIcon, SegmentedControl } from '@mantine/core';
+// import { Icons, THEME_ICONS } from '../../../../constants';
 import navigationImg from '../../category-icons';
 import { CategoryTabProps } from './props';
+import { style } from './style';
 
 const CategoryTab = (props: CategoryTabProps) => {
-  const { categories, theme, scrollToFlags } = props;
+  const { categories , activeTab , scrollToFlags } = props;
+  let data : any = [];
 
   const renderIcon = (category: any) => {
     const { icon } = category;
@@ -21,35 +23,32 @@ const CategoryTab = (props: CategoryTabProps) => {
     }
     const categoryIcons: any = navigationImg.categories[category.id];
 
-    const style: any = Icons === 'auto' ? (THEME_ICONS[theme] as any) : Icons;
+    // const style: any = Icons === 'auto' ? (THEME_ICONS[theme] as any) : Icons;
 
-    return categoryIcons[style] || categoryIcons;
+    return categoryIcons["solid"] || categoryIcons;
   };
+  
+ categories?.map((category: any, i: number) => {
+    data = [...data,
+      {
+        value:category.id,
+        label:(
+                    <ActionIcon
+                      onClick={() => scrollToFlags(category.id)}
+                      variant="transparent"
+                      size={20}
+                      radius="xs">
+                        {renderIcon(category)}
+                  </ActionIcon>
+        )
+      }
+    ]
+  });
 
   return (
-    <Tabs.List
-      position={'center'}
-      grow={true}
-      style={{
-        padding: '10px 10px 0px 10px'
-      }}>
-      {categories?.map((category: any, i: number) => {
-        return (
-          <Tabs.Tab
-            key={category.id}
-            value={categories[0].id as string}
-            style={{ padding: '10px', marginTop: '-10px' }}>
-            <ActionIcon
-              onClick={() => scrollToFlags(category.id)}
-              variant="transparent"
-              size={20}
-              radius="xs">
-              {renderIcon(category)}
-            </ActionIcon>
-          </Tabs.Tab>
-        );
-      })}
-    </Tabs.List>
+    <>
+      <SegmentedControl fullWidth sx={style} style={{}} value={activeTab} data={data}  />
+    </>
   );
 };
 

@@ -143,12 +143,12 @@ export const CategoriesTitle: Record<string, string> = {
 
 export const CategoriesScrollAxis: Record<string, number> = {
   frequent: 0,
-  people: 70,
-  nature: 2730,
-  foods: 3505,
-  activity: 4225,
-  places: 4715,
-  objects: 5858.5,
-  symbols: 7200.2,
-  flags: 8390.2
+  people: 125,
+  nature: 3300,
+  foods: 4165,
+  activity: 4930,
+  places: 5465,
+  objects: 6755,
+  symbols: 8185,
+  flags: 9481
 };
